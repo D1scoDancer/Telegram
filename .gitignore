@@ -14,3 +14,8 @@ TMessagesProj_AppHockeyApp/afat/
 TMessagesProj_AppStandalone/afat/
 TMessagesProj_AppHuawei/afat/
 TMessagesProj/jni/ffmpeg/build_android
+
+# --- форк: локальные файлы, не для публикации ---
+CLAUDE.md
+# google-services.json помечен через `git update-index --skip-worktree`,
+# так как файл приходит из апстрима; .gitignore на отслеживаемые файлы не действует
