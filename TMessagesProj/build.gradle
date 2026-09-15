@@ -129,6 +129,10 @@ android {
         minSdkVersion 21
         targetSdkVersion 36
 
+        // креды приложения берутся из local.properties (файл не в git)
+        buildConfigField "int", "FORK_APP_ID", (getProps("APP_ID") ?: "").toString().isEmpty() ? "0" : getProps("APP_ID")
+        buildConfigField "String", "FORK_APP_HASH", "\"" + (getProps("APP_HASH") ?: "") + "\""
+
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
 
         multiDexEnabled true
