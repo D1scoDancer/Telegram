@@ -2,6 +2,9 @@ package org.telegram.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.HiddenSearchChannels;
 import org.telegram.messenger.LocaleController;
@@ -25,7 +29,9 @@ import org.telegram.ui.Cells.HeaderCell;
 import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Cells.UserCell;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
+import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.ListView.AdapterWithDiffUtils;
 import org.telegram.ui.Components.RecyclerListView;
@@ -48,6 +54,7 @@ public class HiddenChannelsActivity extends BaseFragment {
     private final static int VIEW_TYPE_CHANNEL = 1;
     private final static int VIEW_TYPE_ADD = 2;
     private final static int VIEW_TYPE_SHADOW = 3;
+    private final static int VIEW_TYPE_ADD_FROM_MINE = 4;
 
     private final static int ID_ADD = -1;
 
@@ -94,6 +101,8 @@ public class HiddenChannelsActivity extends BaseFragment {
             }
             final ItemInner item = items.get(position);
             if (item.viewType == VIEW_TYPE_ADD) {
+                openAddByUsername();
+            } else if (item.viewType == VIEW_TYPE_ADD_FROM_MINE) {
                 openChannelPicker();
             } else if (item.viewType == VIEW_TYPE_CHANNEL) {
                 confirmRemove(item.chatId, item.text);
@@ -102,6 +111,89 @@ public class HiddenChannelsActivity extends BaseFragment {
 
         updateItems(false);
         return fragmentView;
+    }
+
+    private void openAddByUsername() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        final EditTextBoldCursor editText = new EditTextBoldCursor(getParentActivity());
+        editText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 16);
+        editText.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+        editText.setHintText(LocaleController.getString(R.string.FocusHiddenChannelsHint));
+        editText.setHintColor(Theme.getColor(Theme.key_dialogTextHint));
+        editText.setSingleLine(true);
+        editText.setBackgroundDrawable(null);
+        editText.setLineColors(
+                Theme.getColor(Theme.key_dialogInputField),
+                Theme.getColor(Theme.key_dialogInputFieldActivated),
+                Theme.getColor(Theme.key_text_RedBold));
+
+        final LinearLayout container = new LinearLayout(getParentActivity());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(AndroidUtilities.dp(24), 0, AndroidUtilities.dp(24), 0);
+        container.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 40, Gravity.LEFT));
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setTitle(LocaleController.getString(R.string.FocusHiddenChannelsAdd));
+        builder.setView(container);
+        builder.setPositiveButton(LocaleController.getString(R.string.Add), (dialog, which) -> resolveAndAdd(editText.getText().toString()));
+        builder.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        showDialog(builder.create());
+        editText.requestFocus();
+        AndroidUtilities.runOnUIThread(() -> AndroidUtilities.showKeyboard(editText), 100);
+    }
+
+    /** Принимает @name, name, t.me/name, https://t.me/name */
+    private static String extractUsername(String input) {
+        if (input == null) {
+            return null;
+        }
+        String s = input.trim();
+        int q = s.indexOf('?');
+        if (q >= 0) {
+            s = s.substring(0, q);
+        }
+        s = s.replaceFirst("(?i)^https?://", "");
+        s = s.replaceFirst("(?i)^(www\\.)?t(elegram)?\\.me/", "");
+        if (s.startsWith("@")) {
+            s = s.substring(1);
+        }
+        while (s.endsWith("/")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        return s.isEmpty() ? null : s;
+    }
+
+    private void resolveAndAdd(String input) {
+        final String username = extractUsername(input);
+        if (username == null) {
+            return;
+        }
+        final AlertDialog progress = new AlertDialog(getParentActivity(), AlertDialog.ALERT_TYPE_SPINNER);
+        progress.showDelayed(200);
+        getMessagesController().getUserNameResolver().resolve(username, peerId -> {
+            progress.dismiss();
+            if (peerId == null) {
+                BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.FocusHiddenChannelsNotFound)).show();
+                return;
+            }
+            if (peerId >= 0) {
+                BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.FocusHiddenChannelsNotChannel)).show();
+                return;
+            }
+            final TLRPC.Chat chat = getMessagesController().getChat(-peerId);
+            if (chat == null || !ChatObject.isChannelAndNotMegaGroup(chat)) {
+                BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.FocusHiddenChannelsNotChannel)).show();
+                return;
+            }
+            if (HiddenSearchChannels.isHidden(chat)) {
+                BulletinFactory.of(this).createErrorBulletin(LocaleController.getString(R.string.FocusHiddenChannelsAlready)).show();
+                return;
+            }
+            HiddenSearchChannels.add(chat);
+            updateItems(true);
+        });
     }
 
     private void openChannelPicker() {
@@ -161,6 +253,7 @@ public class HiddenChannelsActivity extends BaseFragment {
             }
         }
         items.add(ItemInner.asAdd(LocaleController.getString(R.string.FocusHiddenChannelsAdd)));
+        items.add(ItemInner.asAddFromMine(LocaleController.getString(R.string.FocusHiddenChannelsAddFromMine)));
         items.add(ItemInner.asShadow(LocaleController.getString(R.string.FocusHiddenChannelsInfo)));
 
         if (adapter == null) {
@@ -180,7 +273,7 @@ public class HiddenChannelsActivity extends BaseFragment {
         public TLRPC.Chat chat;
 
         private ItemInner(int viewType) {
-            super(viewType, viewType == VIEW_TYPE_CHANNEL || viewType == VIEW_TYPE_ADD);
+            super(viewType, viewType == VIEW_TYPE_CHANNEL || viewType == VIEW_TYPE_ADD || viewType == VIEW_TYPE_ADD_FROM_MINE);
         }
 
         static ItemInner asHeader(CharSequence text) {
@@ -200,6 +293,12 @@ public class HiddenChannelsActivity extends BaseFragment {
 
         static ItemInner asAdd(CharSequence text) {
             ItemInner i = new ItemInner(VIEW_TYPE_ADD);
+            i.text = text;
+            return i;
+        }
+
+        static ItemInner asAddFromMine(CharSequence text) {
+            ItemInner i = new ItemInner(VIEW_TYPE_ADD_FROM_MINE);
             i.text = text;
             return i;
         }
@@ -231,7 +330,7 @@ public class HiddenChannelsActivity extends BaseFragment {
                 view = new HeaderCell(getContext());
             } else if (viewType == VIEW_TYPE_CHANNEL) {
                 view = new UserCell(getContext(), 6, 0, false);
-            } else if (viewType == VIEW_TYPE_ADD) {
+            } else if (viewType == VIEW_TYPE_ADD || viewType == VIEW_TYPE_ADD_FROM_MINE) {
                 view = new TextCell(getContext());
             } else {
                 view = new TextInfoPrivacyCell(getContext());
@@ -257,7 +356,13 @@ public class HiddenChannelsActivity extends BaseFragment {
                 }
                 case VIEW_TYPE_ADD: {
                     TextCell cell = (TextCell) holder.itemView;
-                    cell.setTextAndIcon(item.text, R.drawable.msg_contact_add, false);
+                    cell.setTextAndIcon(item.text, R.drawable.msg_link, true);
+                    cell.setColors(Theme.key_windowBackgroundWhiteBlueIcon, Theme.key_windowBackgroundWhiteBlueButton);
+                    break;
+                }
+                case VIEW_TYPE_ADD_FROM_MINE: {
+                    TextCell cell = (TextCell) holder.itemView;
+                    cell.setTextAndIcon(item.text, R.drawable.msg_channel, false);
                     cell.setColors(Theme.key_windowBackgroundWhiteBlueIcon, Theme.key_windowBackgroundWhiteBlueButton);
                     break;
                 }
@@ -283,7 +388,7 @@ public class HiddenChannelsActivity extends BaseFragment {
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
             final int type = holder.getItemViewType();
-            return type == VIEW_TYPE_CHANNEL || type == VIEW_TYPE_ADD;
+            return type == VIEW_TYPE_CHANNEL || type == VIEW_TYPE_ADD || type == VIEW_TYPE_ADD_FROM_MINE;
         }
 
         @Override

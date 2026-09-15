@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">Telegram</string>
-    <string name="AppNameBeta">Telegram Beta</string>
+    <string name="AppNameBeta">Telegram Focus</string>
     <string name="LanguageName">Русский</string>
     <string name="English">Английский</string>
     <string name="LanguageNameInEnglish">Russian</string>
@@ -264,7 +264,13 @@
     <string name="RemindDayAt">\'Отправить\' d MMM \'в\' HH:mm</string>
     <string name="RemindDayYearAt">\'Напомнить\' d MMM yyyy \'в\' HH:mm</string>
     <string name="FocusHiddenChannels">Скрыты из поиска</string>
-    <string name="FocusHiddenChannelsAdd">Добавить канал</string>
+    <string name="FocusHiddenChannelsAdd">Добавить по @username или ссылке</string>
     <string name="FocusHiddenChannelsInfo">Эти каналы не будут появляться в результатах поиска. В списке чатов они останутся, и оттуда их по-прежнему можно открыть.</string>
     <string name="FocusHiddenChannelsRemove">Убрать из списка</string>
+    <string name="FocusHiddenChannelsSubtitle">Каналы, исключённые из поиска</string>
+    <string name="FocusHiddenChannelsAddFromMine">Выбрать из моих каналов</string>
+    <string name="FocusHiddenChannelsNotFound">Канал не найден</string>
+    <string name="FocusHiddenChannelsNotChannel">Это не канал</string>
+    <string name="FocusHiddenChannelsHint">@username или ссылка t.me</string>
+    <string name="FocusHiddenChannelsAlready">Уже в списке</string>
 </resources>

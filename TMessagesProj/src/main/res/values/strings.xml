@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">Telegram</string>
-    <string name="AppNameBeta">Telegram Beta</string>
+    <string name="AppNameBeta">Telegram Focus</string>
     <string name="LanguageName">English</string>
     <string name="English">English</string>
     <string name="LanguageNameInEnglish">English</string>
@@ -11222,7 +11222,13 @@
     <string name="UnsupportedMessageMessage">Update Telegram to view this message</string>
     <string name="UnsupportedUpdate">Update</string>
     <string name="FocusHiddenChannels">Hidden from search</string>
-    <string name="FocusHiddenChannelsAdd">Add channel</string>
+    <string name="FocusHiddenChannelsAdd">Add by @username or link</string>
     <string name="FocusHiddenChannelsInfo">These channels will not appear in search results. They stay in your chat list and can still be opened from there.</string>
     <string name="FocusHiddenChannelsRemove">Remove from list</string>
+    <string name="FocusHiddenChannelsSubtitle">Channels excluded from search</string>
+    <string name="FocusHiddenChannelsAddFromMine">Choose from my channels</string>
+    <string name="FocusHiddenChannelsNotFound">Channel not found</string>
+    <string name="FocusHiddenChannelsNotChannel">This is not a channel</string>
+    <string name="FocusHiddenChannelsHint">@username or t.me link</string>
+    <string name="FocusHiddenChannelsAlready">Already in the list</string>
 </resources>
