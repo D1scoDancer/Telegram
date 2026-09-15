@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.checkerframework.checker.units.qual.A;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.HiddenSearchChannels;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
@@ -65,7 +66,7 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
         ArrayList<TLRPC.Dialog> dialogs = MessagesController.getInstance(currentAccount).getAllDialogs();
         for (TLRPC.Dialog d : dialogs) {
             TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-d.id);
-            if (chat == null || !ChatObject.isChannelAndNotMegaGroup(chat) || !ChatObject.isPublic(chat) || ChatObject.isNotInChat(chat)) continue;
+            if (chat == null || !ChatObject.isChannelAndNotMegaGroup(chat) || !ChatObject.isPublic(chat) || ChatObject.isNotInChat(chat) || HiddenSearchChannels.isHidden(chat)) continue;
             channels.add(chat);
             if (channels.size() >= 100)
                 break;
@@ -275,6 +276,8 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
                         if (channel == null) continue;
                         if (!ChatObject.isChannelAndNotMegaGroup(channel))
                             continue;
+                        if (HiddenSearchChannels.isHidden(channel))
+                            continue;
                         if (chatIds.contains(channel.id))
                             continue;
                         chatIds.add(channel.id);
@@ -299,6 +302,8 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
                                 t.startsWith(q) || t.contains(" " + q) ||
                                 tT.startsWith(qT) || tT.contains(" " + qT)
                             ) {
+                                if (HiddenSearchChannels.isHidden(chat))
+                                    continue;
                                 if (chatIds.contains(chat.id))
                                     continue;
                                 chatIds.add(chat.id);
@@ -315,6 +320,8 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
                         TLRPC.Chat channel = MessagesController.getInstance(currentAccount).getChat(peer.channel_id);
                         if (channel == null) continue;
                         if (!ChatObject.isChannelAndNotMegaGroup(channel))
+                            continue;
+                        if (HiddenSearchChannels.isHidden(channel))
                             continue;
                         if (chatIds.contains(channel.id))
                             continue;

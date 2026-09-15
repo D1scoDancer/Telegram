@@ -34,6 +34,7 @@ import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.SQLite.SQLitePreparedStatement;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.HiddenSearchChannels;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLog;
@@ -283,6 +284,9 @@ public class DialogsSearchAdapter extends RecyclerListView.SelectionAdapter {
     }
 
     private boolean filter(Object obj) {
+        if (HiddenSearchChannels.isHidden(obj)) {
+            return false;
+        }
         if (dialogsType != DialogsActivity.DIALOGS_TYPE_START_ATTACH_BOT) {
             return true;
         }
@@ -992,6 +996,9 @@ public class DialogsSearchAdapter extends RecyclerListView.SelectionAdapter {
             for (int i = 0; i < result.size(); ++i) {
                 if (!filter(result.get(i))) {
                     result.remove(i);
+                    if (i < names.size()) {
+                        names.remove(i);
+                    }
                     i--;
                 }
             }
@@ -1129,7 +1136,13 @@ public class DialogsSearchAdapter extends RecyclerListView.SelectionAdapter {
                         final TLRPC.TL_contacts_sponsoredPeers r = (TLRPC.TL_contacts_sponsoredPeers) res;
                         MessagesController.getInstance(currentAccount).putUsers(r.users, true);
                         MessagesController.getInstance(currentAccount).putChats(r.chats, true);
-                        sponsoredPeers.addAll(r.peers);
+                        for (int i = 0; i < r.peers.size(); ++i) {
+                            final TLRPC.TL_sponsoredPeer sponsoredPeer = r.peers.get(i);
+                            if (sponsoredPeer == null || HiddenSearchChannels.isHidden(DialogObject.getPeerDialogId(sponsoredPeer.peer))) {
+                                continue;
+                            }
+                            sponsoredPeers.add(sponsoredPeer);
+                        }
                         notifyDataSetChanged();
                     }
                 }));

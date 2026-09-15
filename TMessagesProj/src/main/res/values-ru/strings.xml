@@ -263,4 +263,8 @@
     <string name="RemindTodayAt">\'Отправить сегодня в\' HH:mm</string>
     <string name="RemindDayAt">\'Отправить\' d MMM \'в\' HH:mm</string>
     <string name="RemindDayYearAt">\'Напомнить\' d MMM yyyy \'в\' HH:mm</string>
+    <string name="FocusHiddenChannels">Скрыты из поиска</string>
+    <string name="FocusHiddenChannelsAdd">Добавить канал</string>
+    <string name="FocusHiddenChannelsInfo">Эти каналы не будут появляться в результатах поиска. В списке чатов они останутся, и оттуда их по-прежнему можно открыть.</string>
+    <string name="FocusHiddenChannelsRemove">Убрать из списка</string>
 </resources>

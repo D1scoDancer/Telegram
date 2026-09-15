@@ -11221,4 +11221,8 @@
     <string name="UnsupportedMessageTitle">Unsupported Message</string>
     <string name="UnsupportedMessageMessage">Update Telegram to view this message</string>
     <string name="UnsupportedUpdate">Update</string>
+    <string name="FocusHiddenChannels">Hidden from search</string>
+    <string name="FocusHiddenChannelsAdd">Add channel</string>
+    <string name="FocusHiddenChannelsInfo">These channels will not appear in search results. They stay in your chat list and can still be opened from there.</string>
+    <string name="FocusHiddenChannelsRemove">Remove from list</string>
 </resources>
