@@ -12,9 +12,11 @@ public class FocusSettings {
     private static final String PREFS = "mainconfig";
     private static final String KEY_HIDE_STORIES = "focus_hide_stories";
     private static final String KEY_HIDE_MUTED_COUNTERS = "focus_hide_muted_counters";
+    private static final String KEY_HIDE_PREMIUM_PROMO = "focus_hide_premium_promo";
 
     private static Boolean storiesHidden;
     private static Boolean mutedCountersHidden;
+    private static Boolean premiumPromoHidden;
 
     private static SharedPreferences prefs() {
         return ApplicationLoader.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -69,5 +71,19 @@ public class FocusSettings {
                 storage.getStorageQueue().postRunnable(() -> storage.resetAllUnreadCounters(false));
             }
         }
+    }
+
+    /** Whether Premium upsell banners above the chat list and purchase entries in Settings are hidden. */
+    public static boolean isPremiumPromoHidden() {
+        if (premiumPromoHidden == null) {
+            premiumPromoHidden = read(KEY_HIDE_PREMIUM_PROMO);
+        }
+        return premiumPromoHidden;
+    }
+
+    public static void setPremiumPromoHidden(boolean hidden) {
+        premiumPromoHidden = hidden;
+        write(KEY_HIDE_PREMIUM_PROMO, hidden);
+        postToAllAccounts(NotificationCenter.newSuggestionsAvailable);
     }
 }

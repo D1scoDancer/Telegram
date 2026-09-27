@@ -11232,9 +11232,11 @@
     <string name="FocusHiddenChannelsHint">@username or t.me link</string>
     <string name="FocusHiddenChannelsAlready">Already in the list</string>
     <string name="FocusSettings">Telegram Focus</string>
-    <string name="FocusSettingsSubtitle">Stories, counters, hidden channels</string>
+    <string name="FocusSettingsSubtitle">Stories, counters, promo, hidden channels</string>
     <string name="FocusHideStories">Hide stories</string>
     <string name="FocusHideStoriesInfo">The stories bar above the chat list will not be shown.</string>
     <string name="FocusHideMutedCounters">Hide muted counters</string>
     <string name="FocusHideMutedCountersInfo">Muted chats and the Archive show no unread count. Mentions and reactions are still marked.</string>
+    <string name="FocusHidePremiumPromo">Hide Premium promo</string>
+    <string name="FocusHidePremiumPromoInfo">No Premium offers above the chat list, no Premium, Business, Gift and Stars entries in Settings.</string>
 </resources>

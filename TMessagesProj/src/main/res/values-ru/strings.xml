@@ -274,9 +274,11 @@
     <string name="FocusHiddenChannelsHint">@username или ссылка t.me</string>
     <string name="FocusHiddenChannelsAlready">Уже в списке</string>
     <string name="FocusSettings">Telegram Focus</string>
-    <string name="FocusSettingsSubtitle">Истории, счётчики, каналы</string>
+    <string name="FocusSettingsSubtitle">Истории, счётчики, реклама, каналы</string>
     <string name="FocusHideStories">Скрыть истории</string>
     <string name="FocusHideStoriesInfo">Лента историй над списком чатов не будет показываться.</string>
     <string name="FocusHideMutedCounters">Скрыть счётчики заглушённых</string>
     <string name="FocusHideMutedCountersInfo">У заглушённых чатов и Архива не будет числа непрочитанных. Упоминания и реакции по-прежнему отмечаются.</string>
+    <string name="FocusHidePremiumPromo">Скрыть рекламу Premium</string>
+    <string name="FocusHidePremiumPromoInfo">Без предложений Premium над списком чатов и без пунктов Premium, Business, подарков и Stars в Настройках.</string>
 </resources>
