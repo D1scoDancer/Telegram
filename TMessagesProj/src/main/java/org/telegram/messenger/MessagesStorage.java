@@ -2950,6 +2950,9 @@ public class MessagesStorage extends BaseController {
                         flags |= MessagesController.DIALOG_FILTER_FLAG_ONLY_ARCHIVED;
                     }
                 }
+                if (FocusSettings.isMutedCountersHidden()) {
+                    flags |= MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED;
+                }
                 int unreadCount = 0;
                 if ((flags & MessagesController.DIALOG_FILTER_FLAG_CONTACTS) != 0) {
                     if ((flags & MessagesController.DIALOG_FILTER_FLAG_ONLY_ARCHIVED) == 0) {
@@ -3034,6 +3037,9 @@ public class MessagesStorage extends BaseController {
                 if (filter != null) {
                     for (int b = 0, N2 = filter.alwaysShow.size(); b < N2; b++) {
                         long did = filter.alwaysShow.get(b);
+                        if (FocusSettings.isMutedCountersHidden() && mutedDialogs.indexOfKey(did) >= 0) {
+                            continue;
+                        }
                         if (DialogObject.isUserDialog(did)) {
                             for (int i = 0; i < 2; i++) {
                                 LongSparseArray<TLRPC.User> dict = i == 0 ? usersDict : encUsersDict;
@@ -6041,6 +6047,11 @@ public class MessagesStorage extends BaseController {
     }
 
     private void updateFiltersReadCounter(LongSparseIntArray dialogsToUpdate, LongSparseIntArray dialogsToUpdateMentions, boolean read) throws Exception {
+        if (FocusSettings.isMutedCountersHidden()) {
+            // incremental math below counts muted chats in folders; recount from scratch instead
+            resetAllUnreadCounters(false);
+            return;
+        }
         if ((dialogsToUpdate == null || dialogsToUpdate.size() == 0) && (dialogsToUpdateMentions == null || dialogsToUpdateMentions.size() == 0)) {
             return;
         }

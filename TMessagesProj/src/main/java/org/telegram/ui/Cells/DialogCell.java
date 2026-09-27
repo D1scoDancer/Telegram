@@ -2491,6 +2491,14 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                 pinLeft = dp(14);
             }
         }
+        if (FocusSettings.isMutedCountersHidden() && (currentDialogFolderId != 0 || isCounterMuted())) {
+            countString = null;
+            drawCount = false;
+            if (currentDialogFolderId != 0) {
+                mentionString = null;
+                drawMention = false;
+            }
+        }
         if (drawError) {
             int w = dp(21 + 8);
             messageWidth -= w;

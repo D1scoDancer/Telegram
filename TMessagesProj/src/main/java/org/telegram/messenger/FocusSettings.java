@@ -11,28 +11,62 @@ public class FocusSettings {
 
     private static final String PREFS = "mainconfig";
     private static final String KEY_HIDE_STORIES = "focus_hide_stories";
+    private static final String KEY_HIDE_MUTED_COUNTERS = "focus_hide_muted_counters";
 
     private static Boolean storiesHidden;
+    private static Boolean mutedCountersHidden;
 
     private static SharedPreferences prefs() {
         return ApplicationLoader.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
+    private static boolean read(String key) {
+        return ApplicationLoader.applicationContext != null && prefs().getBoolean(key, false);
+    }
+
+    private static void write(String key, boolean value) {
+        prefs().edit().putBoolean(key, value).apply();
+    }
+
+    private static void postToAllAccounts(int id, Object... args) {
+        for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
+            if (UserConfig.isValidAccount(a)) {
+                NotificationCenter.getInstance(a).postNotificationName(id, args);
+            }
+        }
+    }
+
     /** Whether the stories bar above the chat list and the hidden-stories ring on the Archive row are hidden. */
     public static boolean isStoriesHidden() {
         if (storiesHidden == null) {
-            storiesHidden = ApplicationLoader.applicationContext != null && prefs().getBoolean(KEY_HIDE_STORIES, false);
+            storiesHidden = read(KEY_HIDE_STORIES);
         }
         return storiesHidden;
     }
 
     public static void setStoriesHidden(boolean hidden) {
         storiesHidden = hidden;
-        prefs().edit().putBoolean(KEY_HIDE_STORIES, hidden).apply();
+        write(KEY_HIDE_STORIES, hidden);
+        postToAllAccounts(NotificationCenter.storiesUpdated);
+        postToAllAccounts(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
+    }
+
+    /** Whether unread counters of muted chats, the Archive row and muted chats in folder tabs are hidden. Mentions stay. */
+    public static boolean isMutedCountersHidden() {
+        if (mutedCountersHidden == null) {
+            mutedCountersHidden = read(KEY_HIDE_MUTED_COUNTERS);
+        }
+        return mutedCountersHidden;
+    }
+
+    public static void setMutedCountersHidden(boolean hidden) {
+        mutedCountersHidden = hidden;
+        write(KEY_HIDE_MUTED_COUNTERS, hidden);
+        postToAllAccounts(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (UserConfig.isValidAccount(a)) {
-                NotificationCenter.getInstance(a).postNotificationName(NotificationCenter.storiesUpdated);
-                NotificationCenter.getInstance(a).postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
+                final MessagesStorage storage = MessagesStorage.getInstance(a);
+                storage.getStorageQueue().postRunnable(() -> storage.resetAllUnreadCounters(false));
             }
         }
     }
