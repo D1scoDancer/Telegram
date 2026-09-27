@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.HiddenSearchChannels;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
@@ -110,7 +111,33 @@ public class HiddenChannelsActivity extends BaseFragment {
         });
 
         updateItems(false);
+        loadMissingChats();
         return fragmentView;
+    }
+
+    /** Channels you are not subscribed to are not kept in memory after a restart, so load them from the local database. */
+    private void loadMissingChats() {
+        final ArrayList<Long> missing = new ArrayList<>();
+        for (long id : HiddenSearchChannels.getIds()) {
+            if (getMessagesController().getChat(id) == null) {
+                missing.add(id);
+            }
+        }
+        if (missing.isEmpty()) {
+            return;
+        }
+        getMessagesStorage().getStorageQueue().postRunnable(() -> {
+            final ArrayList<TLRPC.Chat> chats = new ArrayList<>();
+            try {
+                getMessagesStorage().getChatsInternal(TextUtils.join(",", missing), chats);
+            } catch (Exception e) {
+                FileLog.e(e);
+            }
+            AndroidUtilities.runOnUIThread(() -> {
+                getMessagesController().putChats(chats, true);
+                updateItems(true);
+            });
+        });
     }
 
     private void openAddByUsername() {
