@@ -18,7 +18,7 @@ public class FocusSettings {
         return ApplicationLoader.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    /** Whether the stories bar above the chat list is hidden. Avatar story rings are not affected. */
+    /** Whether the stories bar above the chat list and the hidden-stories ring on the Archive row are hidden. */
     public static boolean isStoriesHidden() {
         if (storiesHidden == null) {
             storiesHidden = ApplicationLoader.applicationContext != null && prefs().getBoolean(KEY_HIDE_STORIES, false);
@@ -32,6 +32,7 @@ public class FocusSettings {
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
             if (UserConfig.isValidAccount(a)) {
                 NotificationCenter.getInstance(a).postNotificationName(NotificationCenter.storiesUpdated);
+                NotificationCenter.getInstance(a).postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
             }
         }
     }

@@ -70,6 +70,7 @@ import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.FocusSettings;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.LiteMode;
@@ -4706,7 +4707,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
                     avatarImage.getCenterX(), avatarImage.getCenterY(), dp(48));
                 avatarImage.draw(canvas);
             } else {
-                storyParams.drawHiddenStoriesAsSegments = isShareToStoryCell || currentDialogFolderId != 0;
+                storyParams.drawHiddenStoriesAsSegments = isShareToStoryCell || currentDialogFolderId != 0 && !FocusSettings.isStoriesHidden();
                 int s = storyParams.forceState;
                 if (isShareToStoryCell) {
                     storyParams.forceState = StoriesUtilities.STATE_HAS_UNREAD;
