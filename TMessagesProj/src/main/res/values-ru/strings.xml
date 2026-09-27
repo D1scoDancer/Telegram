@@ -273,4 +273,8 @@
     <string name="FocusHiddenChannelsNotChannel">Это не канал</string>
     <string name="FocusHiddenChannelsHint">@username или ссылка t.me</string>
     <string name="FocusHiddenChannelsAlready">Уже в списке</string>
+    <string name="FocusSettings">Telegram Focus</string>
+    <string name="FocusSettingsSubtitle">Истории, скрытые каналы</string>
+    <string name="FocusHideStories">Скрыть истории</string>
+    <string name="FocusHideStoriesInfo">Лента историй над списком чатов не будет показываться.</string>
 </resources>

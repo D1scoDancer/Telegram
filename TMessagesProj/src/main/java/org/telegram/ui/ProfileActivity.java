@@ -4538,7 +4538,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (position == dataRow) {
                 presentFragment(new DataSettingsActivity());
             } else if (position == hiddenChannelsRow) {
-                presentFragment(new HiddenChannelsActivity());
+                presentFragment(new FocusSettingsActivity());
             } else if (position == chatRow) {
                 presentFragment(new ThemeActivity(ThemeActivity.THEME_TYPE_BASIC));
             } else if (position == filtersRow) {
@@ -13845,7 +13845,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == dataRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.DataSettings), R.drawable.msg2_data, true);
                     } else if (position == hiddenChannelsRow) {
-                        textCell.setTextAndIcon(LocaleController.getString(R.string.FocusHiddenChannels), R.drawable.msg2_block2, true);
+                        textCell.setTextAndIcon(LocaleController.getString(R.string.FocusSettings), R.drawable.msg2_block2, true);
                     } else if (position == chatRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.ChatSettings), R.drawable.msg2_discussion, true);
                     } else if (position == filtersRow) {

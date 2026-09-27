@@ -11231,4 +11231,8 @@
     <string name="FocusHiddenChannelsNotChannel">This is not a channel</string>
     <string name="FocusHiddenChannelsHint">@username or t.me link</string>
     <string name="FocusHiddenChannelsAlready">Already in the list</string>
+    <string name="FocusSettings">Telegram Focus</string>
+    <string name="FocusSettingsSubtitle">Stories, hidden channels</string>
+    <string name="FocusHideStories">Hide stories</string>
+    <string name="FocusHideStoriesInfo">The stories bar above the chat list will not be shown.</string>
 </resources>
