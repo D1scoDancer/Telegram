@@ -11236,7 +11236,7 @@
     <string name="FocusHideStories">Hide stories</string>
     <string name="FocusHideStoriesInfo">The stories bar above the chat list will not be shown.</string>
     <string name="FocusHideMutedCounters">Hide muted counters</string>
-    <string name="FocusHideMutedCountersInfo">Muted chats and the Archive show no unread count. Mentions and reactions are still marked.</string>
+    <string name="FocusHideMutedCountersInfo">No unread count on the Archive row, and folder tabs don\'t count muted chats. Inside the Archive and folders chats show their counters as usual.</string>
     <string name="FocusHidePremiumPromo">Hide Premium promo</string>
     <string name="FocusHidePremiumPromoInfo">No Premium offers above the chat list, no Premium, Business, Gift and Stars entries in Settings.</string>
 </resources>

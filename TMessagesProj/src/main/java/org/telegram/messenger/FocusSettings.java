@@ -53,7 +53,7 @@ public class FocusSettings {
         postToAllAccounts(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
     }
 
-    /** Whether unread counters of muted chats, the Archive row and muted chats in folder tabs are hidden. Mentions stay. */
+    /** Whether the Archive row count is hidden and folder tab counters skip muted chats. Chat rows keep their badges. */
     public static boolean isMutedCountersHidden() {
         if (mutedCountersHidden == null) {
             mutedCountersHidden = read(KEY_HIDE_MUTED_COUNTERS);

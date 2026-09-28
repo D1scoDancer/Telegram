@@ -278,7 +278,7 @@
     <string name="FocusHideStories">Скрыть истории</string>
     <string name="FocusHideStoriesInfo">Лента историй над списком чатов не будет показываться.</string>
     <string name="FocusHideMutedCounters">Скрыть счётчики заглушённых</string>
-    <string name="FocusHideMutedCountersInfo">У заглушённых чатов и Архива не будет числа непрочитанных. Упоминания и реакции по-прежнему отмечаются.</string>
+    <string name="FocusHideMutedCountersInfo">У Архива не будет числа непрочитанных, а на вкладках папок не учитываются заглушённые чаты. Внутри Архива и папок у чатов счётчики как обычно.</string>
     <string name="FocusHidePremiumPromo">Скрыть рекламу Premium</string>
     <string name="FocusHidePremiumPromoInfo">Без предложений Premium над списком чатов и без пунктов Premium, Business, подарков и Stars в Настройках.</string>
 </resources>
